@@ -1,3 +1,8 @@
 node_modules
 .env
 .data
+
+# Vercel CLI
+.vercel
+.env*
+!.env.example
