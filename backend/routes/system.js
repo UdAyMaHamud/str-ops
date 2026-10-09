@@ -3,6 +3,8 @@ const integrationSchema = require('../models/integrationSchema')
 const { authMiddleware } = require('../middleware/authMiddleware')
 const roleCheck = require('../middleware/roleCheckMiddleware')
 const { syncAll } = require('../services/hostawayService')
+const propertySchema = require('../models/propertySchema')
+const { seedDatabase } = require('../services/seed')
 
 const route = express.Router()
 
@@ -83,6 +85,21 @@ route.get('/hostaway/cron', async (req, res) => {
         if (!secret || req.headers.authorization !== `Bearer ${secret}`) return res.status(401).send({ success: false, message: 'Unauthorized' })
         const result = await syncAll()
         return res.status(200).send({ success: result.ok, message: result.message })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({ success: false, message: 'Internal server error' })
+    }
+})
+
+// ====== One-time demo data load for hosted databases (no shell access on Vercel).
+// Works only while SEED_TOKEN is set and only on an empty database; remove SEED_TOKEN afterwards.
+route.post('/seed', async (req, res) => {
+    try {
+        const token = process.env.SEED_TOKEN
+        if (!token || req.headers['x-seed-token'] !== token) return res.status(401).send({ success: false, message: 'Unauthorized' })
+        if (await propertySchema.countDocuments()) return res.status(409).send({ success: false, message: 'Database already has data' })
+        await seedDatabase()
+        return res.status(201).send({ success: true, message: 'Demo data loaded.' })
     } catch (error) {
         console.log(error)
         return res.status(500).send({ success: false, message: 'Internal server error' })
