@@ -22,6 +22,9 @@ route.get('/setup', authMiddleware, roleCheck('admin'), async (req, res) => {
     try {
         const dbString = process.env.DB_STRING || ''
         const hostaway = await integrationSchema.findOne({ name: 'Hostaway (PMS)' })
+        const userSchema = require('../models/userSchema')
+        const demoAccounts = await userSchema.countDocuments({ email: /@strops.test$/ })
+        const isProduction = process.env.NODE_ENV === 'production'
         const hostawayLive = !!(process.env.HOSTAWAY_ACCOUNT_ID && process.env.HOSTAWAY_API_KEY)
 
         const steps = [
@@ -35,7 +38,11 @@ route.get('/setup', authMiddleware, roleCheck('admin'), async (req, res) => {
                 key: 'email',
                 title: 'Email codes (Gmail SMTP)',
                 done: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
-                detail: process.env.SMTP_USER ? 'Verification and reset codes are emailed.' : 'Codes are printed in the API console. Set SMTP_USER and SMTP_PASS.',
+                detail: process.env.SMTP_USER
+                    ? 'Verification and reset codes are emailed.'
+                    : isProduction
+                      ? 'New sign-ups cannot verify their email yet. Set SMTP_USER and SMTP_PASS.'
+                      : 'Codes are printed in the API console. Set SMTP_USER and SMTP_PASS.',
             },
             {
                 key: 'google',
@@ -61,9 +68,13 @@ route.get('/setup', authMiddleware, roleCheck('admin'), async (req, res) => {
             },
             {
                 key: 'mock',
-                title: 'Mock data switched off',
-                done: process.env.SEED_MOCK === 'false',
-                detail: process.env.SEED_MOCK === 'false' ? 'Only real data is loaded.' : 'Set SEED_MOCK=false once real data flows in, then start from an empty database.',
+                title: 'Demo data removed',
+                done: process.env.SEED_MOCK === 'false' && demoAccounts === 0,
+                detail: demoAccounts
+                    ? `${demoAccounts} demo accounts (@strops.test) and their sample data are still in the database. Remove them before real users join.`
+                    : process.env.SEED_MOCK === 'false'
+                      ? 'Only real data is in the database.'
+                      : 'Set SEED_MOCK=false so demo data is never loaded again.',
             },
         ]
 
