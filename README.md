@@ -9,6 +9,16 @@ A short-term rental platform in three parts:
 - `backend/`: Express 5 + Mongoose 9 API (CommonJS)
 - `frontend/`: React 19 + Vite, React Router v7, RTK Query, Tailwind v4, chart.js
 
+## Live
+
+| | URL |
+|---|---|
+| Site | https://str-ops-omega.vercel.app |
+| API | https://str-ops-api.vercel.app |
+
+Both are Vercel projects linked to this repo (`str-ops` uses root folder `frontend`, `str-ops-api` uses `backend`).
+**Every push to `main` deploys both automatically.** Secrets live only in each project's Vercel settings.
+
 ## Run it
 
 ```bash
