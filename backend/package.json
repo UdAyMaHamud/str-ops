@@ -1,0 +1,31 @@
+{
+  "name": "str-ops-dashboard-server",
+  "version": "1.0.0",
+  "description": "Express + MongoDB API for the STR Ops Dashboard",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch index.js",
+    "seed": "node services/seed.js",
+    "serve": "node index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.6",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
+    "google-auth-library": "^11.1.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.1",
+    "nodemailer": "^10.0.16"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^11.3.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

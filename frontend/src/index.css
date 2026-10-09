@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* ===== Custom Theme Configuration ===== */
+@theme {
+  /* Brand: sage green (dashboard) */
+  --color-primary: #1f4a35;
+  --color-primary-soft: #dcebe0;
+  --color-accent: #2f7a50;
+  --color-admin-sidebar: #ffffff;
+  --color-page: #eef3ef;
+  --color-mint: #f4f8f5;
+
+  /* Ink */
+  --color-ink: #141c17;
+  --color-ink-2: #59625c;
+  --color-muted: #8b948d;
+  --color-line: #e3e9e4;
+
+  /* Status (reserved, never used for series) */
+  --color-good: #0ca30c;
+  --color-good-text: #1d7a3a;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+
+  /* Chart series (fixed order, validated) */
+  --color-series-1: #2a8a55;
+  --color-series-2: #8f7fd9;
+  --color-series-3: #c98500;
+  --color-series-4: #3f86c9;
+
+  /* Landing page sky */
+  --color-sky-1: #e9e4f7;
+  --color-sky-2: #f6e7ee;
+  --color-sky-3: #e3eefa;
+  --color-navy: #1e2a4a;
+
+  --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body {
+  @apply bg-page text-ink font-jakarta antialiased;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hatched fill for the highlighted bar (matches the dashboard design) */
+.hatch {
+  background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 7px);
+}
+
+/* ===== Print: owner report only ===== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}
