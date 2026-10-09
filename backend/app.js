@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 const dbConfig = require('./dbConfig')
+const { ensureDb } = require('./dbConfig')
 const route = require('./routes')
 const { apiLimiter } = require('./middleware/rateLimiters')
 
@@ -31,12 +32,12 @@ app.use(cookieParser())
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use(apiLimiter)
 
-// ====== Database (connects once per server or serverless instance; queries wait for it)
+// ====== Database: connect at boot; every request after that makes sure the connection is live
 dbConfig()
 
 // ====== Routes
 app.get('/', (req, res) => res.status(200).send({ success: true, message: 'STR Ops API is running 🚀' }))
-app.use(route)
+app.use(ensureDb, route)
 
 // ====== Global error handler - guarantees a response for anything the routes throw
 app.use((err, req, res, next) => {
